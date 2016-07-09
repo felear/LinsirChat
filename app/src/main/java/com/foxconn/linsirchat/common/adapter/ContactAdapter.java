@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.foxconn.linsirchat.R;
-import com.foxconn.linsirchat.module.contact.bean.UserInfoBean;
+import com.foxconn.linsirchat.module.contact.bean.ConversationBean;
 import com.foxconn.linsirchat.module.conversation.ui.ChatRoomActivity;
 
 import java.util.List;
@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyHolder> {
 
-    private List<UserInfoBean> mList;
+    private List<ConversationBean> mList;
     private Context mContext;
 
-    public ContactAdapter(Context context, List<UserInfoBean> list) {
+    public ContactAdapter(Context context, List<ConversationBean> list) {
         mContext = context;
         mList = list;
     }
@@ -34,7 +34,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyHolder
      *
      * @param mList
      */
-    public void refresh(List<UserInfoBean> list) {
+    public void refresh(List<ConversationBean> list) {
         mList = list;
         this.notifyDataSetChanged();
     }
@@ -78,7 +78,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyHolder
                 @Override
                 public void onClick(View v) {
                     int position = getLayoutPosition();
-                    UserInfoBean iUser = mList.get(position);
+                    ConversationBean iUser = mList.get(position);
                     Intent intent = new Intent(mContext, ChatRoomActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("nick",iUser.getNick());

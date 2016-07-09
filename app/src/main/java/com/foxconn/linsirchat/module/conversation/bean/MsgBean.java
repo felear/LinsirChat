@@ -34,6 +34,16 @@ public class MsgBean implements Serializable{
     @NotNull
     private String time;
 
+    private boolean isRead;
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
     public int getId() {
         return id;
     }

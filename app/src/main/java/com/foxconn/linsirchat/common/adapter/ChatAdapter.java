@@ -2,7 +2,6 @@ package com.foxconn.linsirchat.common.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ChatAdapter(Context context, List<MsgBean> list) {
         mcontext = context;
         mlist = list;
-        mstrTel = SystemUtil.getSharedString(Constant.USERTEL);
+        mstrTel = SystemUtil.getSharedString(Constant.USER_TEL);
     }
 
     @Override

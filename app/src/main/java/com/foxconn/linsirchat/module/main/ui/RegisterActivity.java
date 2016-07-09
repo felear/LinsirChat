@@ -17,6 +17,7 @@ import com.foxconn.linsirchat.R;
 import com.foxconn.linsirchat.base.BaseActivity;
 import com.foxconn.linsirchat.base.NetCallback;
 import com.foxconn.linsirchat.common.utils.WDUtils;
+import com.foxconn.linsirchat.module.contact.bean.UserBean;
 
 import java.util.HashMap;
 
@@ -185,20 +186,24 @@ public class RegisterActivity extends BaseActivity {
                     return;
                 }
 
-                HashMap<String, String> map = new HashMap<String, String>();
+                UserBean userBean = new UserBean();
 
-                map.put("nick", mstrNick);
-                map.put("tel", mstrTel);
-                map.put("pwd", mstrPwd);
-                map.put("age", meditAge.getText() + "");
+                userBean.setNick(mstrNick);
+                userBean.setTel(mstrTel);
+                userBean.setPwd(mstrPwd);
+
+                userBean.setAge(meditAge.getText() + "");
+
                 if (!mrbMan.isChecked()) {
-                    map.put("gender", "女");
+                    userBean.setGender("女");
                     mgender = "女士";
                 } else {
-                    map.put("gender", "男");
+                    userBean.setGender("男");
                 }
 
-                WDUtils.register(map, new NetCallback() {
+
+
+                WDUtils.register(userBean, new NetCallback() {
                     @Override
                     public void success(String strResult) {
                         showLongToast(mstrNick + mgender + "，注册成功");

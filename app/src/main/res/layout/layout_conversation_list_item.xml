@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fff"
+    android:paddingRight="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
 
-    <ImageView
+    <com.foxconn.linsirchat.common.widget.CircleImageView
         android:id="@+id/iv_item_icon"
         android:layout_width="65dp"
         android:layout_height="65dp"
+        android:scaleType="centerCrop"
         android:layout_centerVertical="true"
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="3dp"
-        android:src="@mipmap/default_icon_head" />
+        android:src="@mipmap/icon_man" />
 
     <TextView
         android:id="@+id/tv_item_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_margin="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="12dp"
         android:text="7:43"
-        android:textSize="14sp" />
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/tv_newMsg_num"
+        android:text="1"
+        android:textSize="9sp"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/tv_item_time"
+        android:background="@drawable/shape_tv_newmsg"
+        android:layout_width="18dp"
+        android:layout_height="18dp" />
 
     <TextView
         android:id="@+id/tv_item_name"
@@ -35,7 +52,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="张三"
-        android:textSize="16sp"/>
+        android:textColor="#222"/>
 
     <TextView
         android:id="@+id/tv_item_body"
@@ -47,6 +64,8 @@
         android:layout_below="@id/tv_item_name"
         android:text="message"
         android:textSize="13dp"
+        android:layout_toLeftOf="@id/tv_newMsg_num"
         android:textColor="#999" />
+
 
 </RelativeLayout>

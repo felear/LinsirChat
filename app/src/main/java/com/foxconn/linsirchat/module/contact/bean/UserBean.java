@@ -8,26 +8,63 @@ import com.lidroid.xutils.db.annotation.Unique;
 /**
  * Created by Administrator on 2016/7/7.
  */
-@Table(name = "tbl_user_info")
-public class UserInfoBean {
+@Table(name = "tbl_user")
+public class UserBean {
 
     @Id
     private int id;
     private String nick;
+
     @Unique
     private String tel;
-    private String body;
-    private String time;
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    private String pwd;
     private String Icon;
     private String age;
     private String gender;
+    private String local;
+    private String signature;
+
+    public void setByConversationBean(ConversationBean conversationBean) {
+        nick = conversationBean.getNick();
+        tel = conversationBean.getTel();
+        Icon = conversationBean.getIcon();
+        age = conversationBean.getAge();
+        gender = conversationBean.getGender();
+        local = conversationBean.getLocal();
+        signature = conversationBean.getSignature();
+    }
+
+    public String getLocal() {
+        return local;
+    }
+
+    public void setLocal(String local) {
+        this.local = local;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserInfoBean that = (UserInfoBean) o;
+        UserBean that = (UserBean) o;
 
         if (id != that.id) return false;
         return tel.equals(that.tel);
@@ -39,20 +76,6 @@ public class UserInfoBean {
         int result = id;
         result = 31 * result + tel.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "id=" + id +
-                ", nick='" + nick + '\'' +
-                ", tel='" + tel + '\'' +
-                ", body='" + body + '\'' +
-                ", time='" + time + '\'' +
-                ", Icon='" + Icon + '\'' +
-                ", age='" + age + '\'' +
-                ", gender='" + gender + '\'' +
-                '}';
     }
 
     public String getAge() {
@@ -95,22 +118,6 @@ public class UserInfoBean {
         this.tel = tel;
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
     public String getIcon() {
         return Icon;
     }
@@ -119,11 +126,5 @@ public class UserInfoBean {
         Icon = icon;
     }
 
-    public void setMsg(MsgBean msg) {
-        time = msg.getTime();
-        if (msg.getType() == 0) {
-            body = msg.getBody();
-        }
-    }
 
 }

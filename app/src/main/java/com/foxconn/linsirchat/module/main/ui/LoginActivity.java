@@ -1,14 +1,14 @@
 package com.foxconn.linsirchat.module.main.ui;
 
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.foxconn.linsirchat.R;
@@ -16,6 +16,7 @@ import com.foxconn.linsirchat.base.BaseActivity;
 import com.foxconn.linsirchat.base.NetCallback;
 import com.foxconn.linsirchat.common.constant.Constant;
 import com.foxconn.linsirchat.common.utils.WDUtils;
+import com.foxconn.linsirchat.common.utils.WindowUtils;
 import com.se7en.utils.SystemUtil;
 
 public class LoginActivity extends BaseActivity {
@@ -26,6 +27,7 @@ public class LoginActivity extends BaseActivity {
     private String mstrTel;
     private String mstrPwd;
     private TextView mtvTip;
+    private PopupWindow mPopupWindow;
 
     @Override
     protected int setViewId() {
@@ -96,8 +98,8 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void loadData() {
-        mstrPwd = SystemUtil.getSharedString(Constant.USERPWD);
-        mstrTel = SystemUtil.getSharedString(Constant.USERTEL);
+        mstrPwd = SystemUtil.getSharedString(Constant.USER_PWD);
+        mstrTel = SystemUtil.getSharedString(Constant.USER_TEL);
         if (mstrTel != null) {
             meditTel.setText(mstrTel);
         }
@@ -125,20 +127,32 @@ public class LoginActivity extends BaseActivity {
                 if (!WDUtils.containTel(mstrTel)) {
                     mtvTip.setVisibility(View.VISIBLE);
                     mtvTip.setText("用户名不存在！");
-                    return;
+//                    return;
                 }
+
+                mPopupWindow = WindowUtils.showLoadPopopWindow(this, getWindow().getDecorView());
 
                 WDUtils.login(mstrTel, mstrPwd, new NetCallback() {
                     @Override
                     public void success(String strResult) {
                         if ("success".equals(strResult)) {
 
-                            SystemUtil.setSharedString(Constant.USERTEL, mstrTel);
-                            SystemUtil.setSharedString(Constant.USERPWD, mstrPwd);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
 
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                                    SystemUtil.setSharedString(Constant.USER_TEL, mstrTel);
+                                    SystemUtil.setSharedString(Constant.USER_PWD, mstrPwd);
+
+                                    if (mPopupWindow != null && mPopupWindow.isShowing()) {
+                                        mPopupWindow.dismiss();
+                                    }
+
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }, 1000);
                         } else {
                             mtvTip.setVisibility(View.VISIBLE);
                             mtvTip.setText("密码错误！");

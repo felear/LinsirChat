@@ -27,6 +27,7 @@ import com.foxconn.linsirchat.common.utils.WDUtils;
 import com.foxconn.linsirchat.module.conversation.bean.MsgBean;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.db.sqlite.Selector;
+import com.lidroid.xutils.db.sqlite.WhereBuilder;
 import com.lidroid.xutils.exception.DbException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.se7en.utils.SystemUtil;
@@ -82,6 +83,9 @@ public class ChatRoomActivity extends BaseActivity {
 
         mstrTel = bundle.getString("tel");
         MyApplication.mForegroundChatUserTel = mstrTel;
+        readMsg(mstrTel);
+        sendBroad();
+
         mtvTile.setText(bundle.getString("nick"));
         Log.d("print", mstrTel);
 
@@ -103,6 +107,26 @@ public class ChatRoomActivity extends BaseActivity {
         mrcvChat.setLayoutManager(linearLayoutManager);
         mrcvChat.setAdapter(mAdapter);
         mrcvChat.scrollToPosition(mList.size() - 1);
+    }
+
+    private void sendBroad() {
+        // 发送广播
+        Intent intent = new Intent(Constant.BROAD_URI_CHAT);
+        intent.putExtra(Constant.USER_TEL, mstrTel);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void readMsg(String tel) {
+        MsgBean msgBean = new MsgBean();
+        msgBean.setRead(true);
+
+        try {
+            MyApplication.mDbUtils.update(msgBean,
+                    WhereBuilder.b(Constant.MSG_SENDER, "=", tel),Constant.MSG_IS_READ);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -175,7 +199,7 @@ public class ChatRoomActivity extends BaseActivity {
             case R.id.btn_send:
                 mMsgBean = new MsgBean(meditMsg.getText().toString(), System.currentTimeMillis() + "");
 
-                mMsgBean.setSender(SystemUtil.getSharedString(Constant.USERTEL));
+                mMsgBean.setSender(SystemUtil.getSharedString(Constant.USER_TEL));
                 mMsgBean.setReceiver(mstrTel);
                 try {
                     MyApplication.mDbUtils.save(mMsgBean);

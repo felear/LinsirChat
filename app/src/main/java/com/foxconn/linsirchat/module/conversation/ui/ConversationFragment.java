@@ -12,7 +12,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.foxconn.linsirchat.MyApplication;
@@ -20,7 +22,7 @@ import com.foxconn.linsirchat.R;
 import com.foxconn.linsirchat.base.BaseFragment;
 import com.foxconn.linsirchat.common.adapter.CommonReclycleViewAdapter;
 import com.foxconn.linsirchat.common.constant.Constant;
-import com.foxconn.linsirchat.module.contact.bean.UserInfoBean;
+import com.foxconn.linsirchat.module.contact.bean.ConversationBean;
 import com.foxconn.linsirchat.module.conversation.bean.MsgBean;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.db.sqlite.Selector;
@@ -43,8 +45,8 @@ public class ConversationFragment extends BaseFragment {
     private RecyclerView mrcv;
     @ViewInject(R.id.srflayout_conversation)
     private SwipeRefreshLayout msrfLayout;
-    private CommonReclycleViewAdapter<UserInfoBean> mAdapter;
-    private List<UserInfoBean> mList = new ArrayList<>();
+    private CommonReclycleViewAdapter<ConversationBean> mAdapter;
+    private List<ConversationBean> mList = new ArrayList<>();
     private BroadcastReceiver mLocalBroadcastReceiver;
 
     @Override
@@ -65,9 +67,9 @@ public class ConversationFragment extends BaseFragment {
         mrcv.setLayoutManager(linearLayoutManager);
 
         // 设置适配器
-        mAdapter = new CommonReclycleViewAdapter<UserInfoBean>(getActivity(), mList, R.layout.layout_conversation_list_item) {
+        mAdapter = new CommonReclycleViewAdapter<ConversationBean>(getActivity(), mList, R.layout.layout_conversation_list_item) {
             @Override
-            public void convert(CommonReclycleViewAdapter.MyHolder helper, final int position,final UserInfoBean item) {
+            public void convert(CommonReclycleViewAdapter.MyHolder helper, final int position, final ConversationBean item) {
 
                 // 长安item事件监听
                 helper.mItemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -91,7 +93,7 @@ public class ConversationFragment extends BaseFragment {
                                             // 删除数据库中的记录
                                             try {
                                                 MyApplication.mDbUtils.update(item,
-                                                        WhereBuilder.b("id","=",item.getId()));
+                                                        WhereBuilder.b("id", "=", item.getId()));
                                             } catch (DbException e) {
                                                 e.printStackTrace();
                                             }
@@ -109,7 +111,7 @@ public class ConversationFragment extends BaseFragment {
                 helper.mItemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UserInfoBean iUser = mList.get(position);
+                        ConversationBean iUser = mList.get(position);
                         Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("nick", iUser.getNick());
@@ -118,9 +120,32 @@ public class ConversationFragment extends BaseFragment {
                         getActivity().startActivity(intent);
                     }
                 });
+                // 设置TextView控件内容
                 ((TextView) helper.mItemView.findViewById(R.id.tv_item_body)).setText(item.getBody());
                 ((TextView) helper.mItemView.findViewById(R.id.tv_item_name)).setText(item.getNick());
                 ((TextView) helper.mItemView.findViewById(R.id.tv_item_time)).setText(formatTime(item.getTime()));
+
+                // 设置头像
+                String icon = item.getIcon();
+                String gender = item.getGender();
+                ImageView ivIcon = (ImageView) helper.mItemView.findViewById(R.id.iv_item_icon);
+                if (icon == null) {
+                    if (TextUtils.equals(gender, "男")) {
+                        ivIcon.setImageResource(R.mipmap.icon_man);
+                    } else {
+                        ivIcon.setImageResource(R.mipmap.icon_woman2);
+                    }
+                }
+
+                TextView tvCount = (TextView) helper.mItemView.findViewById(R.id.tv_newMsg_num);
+                String msgCount = getMsgCount(item.getTel());
+                if (msgCount == null) {
+                    tvCount.setVisibility(View.GONE);
+                } else {
+                    tvCount.setVisibility(View.VISIBLE);
+                    tvCount.setText(msgCount);
+                }
+
             }
         };
 
@@ -128,10 +153,29 @@ public class ConversationFragment extends BaseFragment {
 
     }
 
+    private String getMsgCount(String tel) {
+
+        List<MsgBean> list = null;
+        try {
+            list = MyApplication.mDbUtils.findAll(Selector.from(MsgBean.class)
+                    .where(Constant.MSG_SENDER, "=", tel)
+                    .and(Constant.MSG_IS_READ, "=", false));
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+
+        if (list == null || list.size() < 1) {
+            return null;
+        } else {
+            return list.size() + "";
+        }
+
+    }
+
     // 刷新消息列表
     private void refreshList() {
         try {
-            mList = MyApplication.mDbUtils.findAll(Selector.from(UserInfoBean.class).where("time", ">", 0).orderBy("time", true));
+            mList = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class).where("time", ">", 0).orderBy("time", true));
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -150,14 +194,27 @@ public class ConversationFragment extends BaseFragment {
         c2.setTime(new Date());
         c1.setTimeInMillis(l);
 
+        String str = null;
+
+        switch ((c1.get(Calendar.HOUR_OF_DAY) + 2) / 8) {
+            case 1:
+                str = "上午";
+                break;
+            case 2:
+                str = "下午";
+                break;
+            default:
+                str = "晚上";
+        }
+
         if (c2.get(Calendar.DAY_OF_YEAR) - c1.get(Calendar.DAY_OF_YEAR) == 0) {
             return new SimpleDateFormat("HH:mm").format(l);
         } else if (c2.get(Calendar.DAY_OF_YEAR) - c1.get(Calendar.DAY_OF_YEAR) == 1) {
-            return new SimpleDateFormat("昨天 HH:mm").format(new Date(l));
+            return new SimpleDateFormat("昨天").format(new Date(l)) + " " + str;
         } else if (c2.get(Calendar.DAY_OF_YEAR) - c1.get(Calendar.DAY_OF_YEAR) == 2) {
-            return new SimpleDateFormat("前天 HH:mm").format(new Date(l));
+            return new SimpleDateFormat("前天").format(new Date(l)) + " " + str;
         } else {
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(l));
+            return new SimpleDateFormat("yyyy-MM-dd").format(new Date(l)) + " " + str;
         }
     }
 

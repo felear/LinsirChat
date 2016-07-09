@@ -1,13 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#eee"
+    android:paddingTop="20dp">
 
-    <TextView
-        android:text="我"
-        android:textSize="25sp"
-        android:gravity="center"
+    <LinearLayout
+        android:background="#fff"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_icon"
+            style="@style/layout_me">
+
+            <TextView
+                android:text="头像"
+                style="@style/tv_me" />
+
+            <com.foxconn.linsirchat.common.widget.CircleImageView
+                android:id="@+id/civ_me_icon"
+                android:src="@mipmap/icon_man"
+                android:scaleType="centerCrop"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+        </LinearLayout>
+
+        <View
+            style="@style/split" />
+
+        <LinearLayout
+            android:id="@+id/layout_nick"
+            style="@style/layout_me">
+
+            <TextView
+                style="@style/tv_me"
+                android:text="昵称" />
+
+            <TextView
+                android:id="@+id/tv_me_nick"
+                android:text="felear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            style="@style/split" />
+
+        <LinearLayout
+            android:id="@+id/layout_tel"
+            style="@style/layout_me">
+
+            <TextView
+                style="@style/tv_me"
+                android:text="手机号码" />
+
+            <TextView
+                android:id="@+id/tv_me_tel"
+                android:text="13267166985"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            style="@style/split" />
+
+        <LinearLayout
+            android:id="@+id/layout_gender"
+            style="@style/layout_me">
+
+            <TextView
+                style="@style/tv_me"
+                android:text="性别" />
+
+            <TextView
+                android:id="@+id/tv_me_gender"
+                android:text="男"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            style="@style/split" />
+
+        <LinearLayout
+            android:id="@+id/layout_age"
+            style="@style/layout_me">
+
+            <TextView
+                style="@style/tv_me"
+                android:text="年龄" />
+
+            <TextView
+                android:id="@+id/tv_me_age"
+                android:text="26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            style="@style/split" />
+
+        <LinearLayout
+            android:id="@+id/layout_local"
+            style="@style/layout_me">
+
+            <TextView
+                style="@style/tv_me"
+                android:text="地区" />
+
+            <TextView
+                android:id="@+id/tv_me_local"
+                android:text="广东 深圳"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            style="@style/split" />
+
+        <LinearLayout
+            android:id="@+id/layout_sign"
+            style="@style/layout_me">
+
+            <TextView
+                style="@style/tv_me"
+                android:text="个性签名" />
+
+            <TextView
+                android:id="@+id/tv_me_signature"
+                android:text="一路艰辛，感谢有你!"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            style="@style/split" />
+
+    </LinearLayout>
+</ScrollView>

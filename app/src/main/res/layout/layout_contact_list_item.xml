@@ -1,39 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fff"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
 
-    <ImageView
+    <com.foxconn.linsirchat.common.widget.CircleImageView
         android:id="@+id/iv_item_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:scaleType="centerCrop"
         android:layout_centerVertical="true"
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="3dp"
-        android:src="@mipmap/default_icon_head" />
+        android:src="@mipmap/icon_man" />
 
 
     <TextView
         android:id="@+id/tv_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@id/iv_item_icon"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="张三"
-        android:textColor="#444"
-        android:layout_centerVertical="true"
-        android:textSize="17sp"/>
+        android:textColor="#222"
+        android:textSize="17sp" />
 
     <View
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
-        android:background="#5888"
-        android:layout_height="0.5dp" />
+        style="@style/split"
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>

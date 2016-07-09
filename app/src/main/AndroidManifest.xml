@@ -32,7 +32,8 @@
         <activity android:name=".module.main.ui.AgreementActivity" />
         <activity android:name=".module.main.ui.LoginActivity" />
         <activity android:name=".module.main.ui.FindPwdActivity" />
-        <activity android:name=".module.conversation.ui.ChatRoomActivity"></activity>
+        <activity android:name=".module.conversation.ui.ChatRoomActivity" />
+        <activity android:name=".module.me.ui.ModifyUserInfoActivity"></activity>
     </application>
 
 </manifest>

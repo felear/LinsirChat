@@ -1,13 +1,15 @@
 package com.foxconn.linsirchat.common.utils;
 
-import android.os.Handler;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.foxconn.linsirchat.MyApplication;
 import com.foxconn.linsirchat.base.NetCallback;
 import com.foxconn.linsirchat.common.constant.Constant;
-import com.foxconn.linsirchat.module.contact.bean.UserInfoBean;
+import com.foxconn.linsirchat.module.contact.bean.ConversationBean;
+import com.foxconn.linsirchat.module.contact.bean.UserBean;
 import com.foxconn.linsirchat.module.conversation.bean.MsgBean;
 import com.lidroid.xutils.db.sqlite.Selector;
 import com.lidroid.xutils.db.sqlite.WhereBuilder;
@@ -22,7 +24,6 @@ import com.wilddog.client.WilddogError;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Administrator on 2016/7/4.
@@ -57,7 +58,7 @@ public class WDUtils {
     }
 
     public static void receiveMsg(final NetCallback netCallback) {
-        String iTel = SystemUtil.getSharedString(Constant.USERTEL);
+        String iTel = SystemUtil.getSharedString(Constant.USER_TEL);
         Wilddog wilddog = new Wilddog(Constant.CONVERSATION_URL + iTel + "/");
         wilddog.addChildEventListener(new ChildEventListener() {
             @Override
@@ -81,7 +82,6 @@ public class WDUtils {
                             msgBean.setType(Integer.parseInt(value.get("type") + ""));
                         }
 
-                        // TODO 存入数据库
                         MyApplication.mDbUtils.save(msgBean);
                         if (containTel(value.get("sender") + ""))
                             saveToUser(value.get("sender") + "", msgBean);
@@ -123,27 +123,27 @@ public class WDUtils {
     }
 
     private static void saveToUser(String userTel, MsgBean msgBean) {
-        if (TextUtils.equals(SystemUtil.getSharedString(Constant.USERTEL), userTel)) {
+        if (TextUtils.equals(SystemUtil.getSharedString(Constant.USER_TEL), userTel)) {
             return;
         }
         // 更新联系人信息
-        List<UserInfoBean> listUser = null;
-        UserInfoBean userInfoBean = null;
+        List<ConversationBean> listUser = null;
+        ConversationBean conversationBean = null;
 
         if (containTel(userTel)) {
             try {
-                listUser = MyApplication.mDbUtils.findAll(Selector.from(UserInfoBean.class)
+                listUser = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class)
                         .where("tel", "=", userTel));
             } catch (DbException e) {
                 e.printStackTrace();
             }
             // 获得联系人
-            userInfoBean = listUser.get(0);
+            conversationBean = listUser.get(0);
             // 添加联系人最后消息
-            userInfoBean.setMsg(msgBean);
+            conversationBean.setMsg(msgBean);
             try {
-                MyApplication.mDbUtils.update(userInfoBean, WhereBuilder
-                        .b("tel", "=", userInfoBean.getTel()), "time", "body");
+                MyApplication.mDbUtils.update(conversationBean, WhereBuilder
+                        .b("tel", "=", conversationBean.getTel()), "time", "body");
             } catch (DbException e) {
                 e.printStackTrace();
             }
@@ -152,10 +152,10 @@ public class WDUtils {
 
     public static boolean containTel(String strTel) {
 
-        List<UserInfoBean> list = null;
+        List<ConversationBean> list = null;
 
         try {
-            list = MyApplication.mDbUtils.findAll(Selector.from(UserInfoBean.class)
+            list = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class)
                     .where("tel", "=", strTel));
         } catch (DbException e) {
             e.printStackTrace();
@@ -176,41 +176,77 @@ public class WDUtils {
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                HashMap<String, Object> map = (HashMap<String, Object>) dataSnapshot.getValue();
 
+                UserBean value = (UserBean) dataSnapshot.getValue(UserBean.class);
+                value.setTel(dataSnapshot.getKey());
+                ConversationBean iConversation = null;
+                // 当本地数据库不存在该用户时，直接存入；当用户存在，更新本地数据库
                 if (!containTel(dataSnapshot.getKey())) {
 
-                    UserInfoBean iUser = new UserInfoBean();
-                    iUser.setTel(dataSnapshot.getKey() + "");
-                    iUser.setNick(map.get("nick") + "");
-                    iUser.setAge(map.get("age") + "");
-                    iUser.setGender(map.get("gender") + "");
-
+                    iConversation = new ConversationBean();
+                    iConversation.setByUserBean(value);
                     try {
-                        MyApplication.mDbUtils.save(iUser);
+                        MyApplication.mDbUtils.save(iConversation);
                     } catch (DbException e) {
                         e.printStackTrace();
                     }
-                    if (netCallback != null) {
-                        netCallback.success(map.get("nick") + "");
+
+                } else {
+                    try {
+                        List<ConversationBean> list = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class)
+                                .where(Constant.USER_TEL, "=", dataSnapshot.getKey()));
+                        iConversation = list.get(0);
+                        iConversation.setByUserBean(value);
+                        MyApplication.mDbUtils.update(iConversation, WhereBuilder.b(Constant.USER_TEL, "=", dataSnapshot.getKey()));
+
+                        list = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class)
+                                .where(Constant.USER_TEL, "=", dataSnapshot.getKey()));
+
+                    } catch (DbException e) {
+                        e.printStackTrace();
                     }
-                    Log.d("print", "onChildAdded : " + iUser);
+
                 }
+
+
+                if (netCallback != null) {
+                    netCallback.success(value.getTel() + "");
+                }
+
+
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d("print", "onChildChanged : " + dataSnapshot);
+                Log.d("print", "getUser onChildChanged : " + dataSnapshot);
+
+                UserBean value = (UserBean) dataSnapshot.getValue(UserBean.class);
+                value.setTel(dataSnapshot.getKey());
+
+                try {
+                    List<ConversationBean> list = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class)
+                            .where(Constant.USER_TEL, "=", dataSnapshot.getKey()));
+                    ConversationBean iConversation = list.get(0);
+                    iConversation.setByUserBean(value);
+                    MyApplication.mDbUtils.update(iConversation, WhereBuilder.b(Constant.USER_TEL, "=", dataSnapshot.getKey()));
+
+                } catch (DbException e) {
+                    e.printStackTrace();
+                    Log.d("print","getUser : " + e);
+                }
+
+
+
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d("print", "onChildRemoved : " + dataSnapshot);
+                Log.d("print", "getUser onChildRemoved : " + dataSnapshot);
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Log.d("print", "onChildMoved : " + dataSnapshot);
+                Log.d("print", "getUser onChildMoved : " + dataSnapshot);
             }
 
             @Override
@@ -223,9 +259,9 @@ public class WDUtils {
         });
     }
 
-    public static void register(HashMap<String, String> map, final NetCallback netCallback) {
-        Wilddog wilddog = new Wilddog(Constant.USER_INFO_URL + map.get("tel") + "/");
-        wilddog.setValue(map, new Wilddog.CompletionListener() {
+    public static void register(UserBean user, final NetCallback netCallback) {
+        Wilddog wilddog = new Wilddog(Constant.USER_INFO_URL + user.getTel() + "/");
+        wilddog.setValue(user, new Wilddog.CompletionListener() {
             @Override
             public void onComplete(WilddogError wilddogError, Wilddog wilddog) {
                 if (wilddogError == null) {
@@ -247,7 +283,7 @@ public class WDUtils {
                 if (userPwd.equals(map.get("pwd") + "")) {
                     netCallback.success("success");
                 } else {
-                    netCallback.success("fail");
+                    netCallback.fail("fail");
                 }
 
             }
@@ -274,4 +310,39 @@ public class WDUtils {
         });
     }
 
+    public static void changeElement(String tel,int type, String s,NetCallback callback) {
+        ConversationBean conversationBean = null;
+        try {
+            List<ConversationBean> list = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class)
+                    .where(Constant.USER_TEL, "=", tel));
+            conversationBean = list.get(0);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+
+
+        switch (type) {
+            case Constant.ME_TYPE_SIGN:
+                conversationBean.setSignature(s);
+                break;
+            case Constant.ME_TYPE_AGE:
+                conversationBean.setAge(s);
+                break;
+            case Constant.ME_TYPE_Nick:
+                conversationBean.setNick(s);
+                break;
+            case Constant.ME_TYPE_GENDER:
+                conversationBean.setGender(s);
+                break;
+            case Constant.ME_TYPE_LOCAL:
+                conversationBean.setLocal(s);
+                break;
+        }
+        UserBean userBean = new UserBean();
+        userBean.setByConversationBean(conversationBean);
+        userBean.setPwd(SystemUtil.getSharedString(Constant.USER_PWD));
+
+        register(userBean,callback);
+
+    }
 }
