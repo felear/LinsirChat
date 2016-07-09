@@ -102,6 +102,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         mLayoutTel.setOnClickListener(this);
         mLayoutIcon.setOnClickListener(this);
         mLayoutLocal.setOnClickListener(this);
+        mcivIcon.setOnClickListener(this);
     }
 
     @Override
@@ -118,7 +119,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         mtvLocal.setText(mConversation.getLocal());
 
 
-        // 接受消息列表变化监听
+        // 接收消息列表变化监听
         mLocalBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -191,7 +192,6 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
             case R.id.layout_gender:
                 // 更改性别
                 changeGender();
-
                 break;
             case R.id.layout_tel:
                 // 更改电话号码
@@ -207,6 +207,11 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                 intent.putExtra(Constant.ME_ITEM_MSG, mtvLocal.getText());
                 intent.putExtra(Constant.ME_ITEM_TYPE, Constant.ME_TYPE_LOCAL);
                 c = ModifyUserInfoActivity.class;
+                break;
+            case R.id.civ_me_icon:
+                // 查看头像
+                intent.putExtra("gender", mConversation.getGender());
+                c = ShowIconActivity.class;
                 break;
         }
         if (c != null) {

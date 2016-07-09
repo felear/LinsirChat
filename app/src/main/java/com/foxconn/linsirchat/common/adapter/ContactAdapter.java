@@ -88,8 +88,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyHolder
                 }
             });
 
-            mtvName = (TextView) itemView.findViewById(R.id.tv_item_name);
-            mivIcon = (ImageView) itemView.findViewById(R.id.iv_item_icon);
+            mtvName = (TextView) itemView.findViewById(R.id.tv_contact_name);
+            mivIcon = (ImageView) itemView.findViewById(R.id.iv_contact_icon);
         }
     }
 

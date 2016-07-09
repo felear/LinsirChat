@@ -14,7 +14,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".module.main.ui.MainActivity" />
+        <activity
+            android:name=".module.main.ui.MainActivity"
+            android:launchMode="singleTask" />
 
         <service
             android:name=".MyService"
@@ -33,7 +35,9 @@
         <activity android:name=".module.main.ui.LoginActivity" />
         <activity android:name=".module.main.ui.FindPwdActivity" />
         <activity android:name=".module.conversation.ui.ChatRoomActivity" />
-        <activity android:name=".module.me.ui.ModifyUserInfoActivity"></activity>
+        <activity android:name=".module.me.ui.ModifyUserInfoActivity" />
+        <activity android:name=".module.me.ui.ShowIconActivity" />
+        <activity android:name=".module.contact.ui.ShowContactActivity"></activity>
     </application>
 
 </manifest>

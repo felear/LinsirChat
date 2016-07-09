@@ -31,5 +31,6 @@ public class Constant {
     public static final int ME_TYPE_GENDER = 3;
     public static final int ME_TYPE_LOCAL = 4;
     public static final int ME_TYPE_PWD = 5;
+    public static final int ME_TYPE_NAME = 6;
 
 }

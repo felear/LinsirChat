@@ -12,7 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,6 +29,7 @@ import com.foxconn.linsirchat.common.adapter.ChatAdapter;
 import com.foxconn.linsirchat.common.constant.Constant;
 import com.foxconn.linsirchat.common.utils.WDUtils;
 import com.foxconn.linsirchat.module.conversation.bean.MsgBean;
+import com.foxconn.linsirchat.module.main.ui.MainActivity;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.db.sqlite.Selector;
 import com.lidroid.xutils.db.sqlite.WhereBuilder;
@@ -35,7 +40,7 @@ import com.se7en.utils.SystemUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatRoomActivity extends BaseActivity {
+public class ChatRoomActivity extends BaseActivity implements GestureDetector.OnGestureListener,View.OnTouchListener{
 
     private TextView mtvTile;
     private EditText meditMsg;
@@ -44,13 +49,14 @@ public class ChatRoomActivity extends BaseActivity {
 
     @ViewInject(R.id.rcv_chat)
     private RecyclerView mrcvChat;
-
     @ViewInject(R.id.srflayout_chat)
     private SwipeRefreshLayout msrfLayout;
+
     private List<MsgBean> mList;
     private ChatAdapter mAdapter;
     private MsgBean mMsgBean;
     private BroadcastReceiver mLocalBroadcastReceiver;
+    private GestureDetector mDetector;
 
     @Override
     protected int setViewId() {
@@ -107,6 +113,7 @@ public class ChatRoomActivity extends BaseActivity {
         mrcvChat.setLayoutManager(linearLayoutManager);
         mrcvChat.setAdapter(mAdapter);
         mrcvChat.scrollToPosition(mList.size() - 1);
+
     }
 
     private void sendBroad() {
@@ -131,6 +138,11 @@ public class ChatRoomActivity extends BaseActivity {
 
     @Override
     protected void initEvent() {
+
+        // 创建手势监听器
+        mDetector = new GestureDetector(this, this);
+        mrcvChat.setOnTouchListener(this);
+
         meditMsg.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -240,5 +252,58 @@ public class ChatRoomActivity extends BaseActivity {
         // 置空当前聊天对象
         MyApplication.mForegroundChatUserTel = null;
         super.onDestroy();
+    }
+
+    // 将触碰事件交给Gesture处理
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mDetector.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        if (velocityX > 0) {
+
+            // 向右滑动返回主菜单
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+
+            overridePendingTransition(R.anim.anim_chat_start,R.anim.anim_chat_exit);
+
+            finish();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return mDetector.onTouchEvent(event);
     }
 }

@@ -2,14 +2,18 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#eee"
-    android:paddingTop="20dp">
+    android:background="#eee">
 
     <LinearLayout
         android:background="#fff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <View
+            android:background="#eee"
+            android:layout_height="25dp"
+            android:layout_width="match_parent"/>
 
         <LinearLayout
             android:id="@+id/layout_icon"
@@ -26,7 +30,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="70dp"
-                android:layout_height="70dp" />
+                android:layout_height="70dp"/>
         </LinearLayout>
 
         <View
@@ -140,7 +144,24 @@
         </LinearLayout>
 
         <View
-            style="@style/split" />
+            android:background="#eee"
+            android:layout_height="25dp"
+            android:layout_width="match_parent"/>
+
+        <LinearLayout
+            android:id="@+id/layout_sign_out"
+            style="@style/layout_me">
+
+            <TextView
+                style="@style/tv_me"
+                android:text="退出登录" />
+
+        </LinearLayout>
+
+        <View
+            android:background="#eee"
+            android:layout_height="25dp"
+            android:layout_width="match_parent"/>
 
     </LinearLayout>
 </ScrollView>

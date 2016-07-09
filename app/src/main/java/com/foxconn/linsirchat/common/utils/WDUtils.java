@@ -1,7 +1,5 @@
 package com.foxconn.linsirchat.common.utils;
 
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,6 +12,7 @@ import com.foxconn.linsirchat.module.conversation.bean.MsgBean;
 import com.lidroid.xutils.db.sqlite.Selector;
 import com.lidroid.xutils.db.sqlite.WhereBuilder;
 import com.lidroid.xutils.exception.DbException;
+import com.se7en.utils.NetworkUtils;
 import com.se7en.utils.SystemUtil;
 import com.wilddog.client.ChildEventListener;
 import com.wilddog.client.DataSnapshot;
@@ -180,6 +179,12 @@ public class WDUtils {
                 UserBean value = (UserBean) dataSnapshot.getValue(UserBean.class);
                 value.setTel(dataSnapshot.getKey());
                 ConversationBean iConversation = null;
+                // 判断网络是否已连接，如未连接，停止处理
+                if (!NetworkUtils.isOnline()) {
+                    return;
+                }
+
+                Log.d("print", "getUser onChildAdded : " + dataSnapshot);
                 // 当本地数据库不存在该用户时，直接存入；当用户存在，更新本地数据库
                 if (!containTel(dataSnapshot.getKey())) {
 
@@ -339,7 +344,17 @@ public class WDUtils {
             case Constant.ME_TYPE_LOCAL:
                 conversationBean.setLocal(strDest);
                 break;
+            case Constant.ME_TYPE_NAME:
+                conversationBean.setName(strDest);
+                try {
+                    MyApplication.mDbUtils.update(conversationBean, WhereBuilder
+                            .b(Constant.USER_TEL, "=", tel));
 
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+                callback.success("success");
+                return;
         }
 
         UserBean userBean = new UserBean();

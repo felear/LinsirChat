@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#eee"
+    tools:context="com.foxconn.linsirchat.module.contact.ui.ShowContactActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="好友资料"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:clickable="true"
+            android:drawableLeft="@mipmap/ic_redbag_back_normal"
+            android:drawablePadding="10dp"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="返回"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#eee">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:background="#eee" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.foxconn.linsirchat.common.widget.CircleImageView
+                    android:id="@+id/iv_contact_icon"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="12dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/icon_man"
+                    android:onClick="onClick"/>
+
+
+                <TextView
+                    android:id="@+id/tv_contact_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_toRightOf="@id/iv_contact_icon"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="张三"
+                    android:textColor="#222"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_contact_gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_contact_name"
+                    android:layout_toRightOf="@id/iv_contact_icon"
+                    android:text="男"
+                    android:textSize="11sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#999" />
+
+                <TextView
+                    android:id="@+id/tv_contact_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_contact_name"
+                    android:layout_marginLeft="12dp"
+                    android:layout_toRightOf="@id/tv_contact_gender"
+                    android:text="16"
+                    android:textSize="11sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#999" />
+
+                <TextView
+                    android:id="@+id/tv_contact_local"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_contact_gender"
+                    android:layout_toRightOf="@id/iv_contact_icon"
+                    android:text="广东 深圳"
+                    android:textSize="11sp"
+                    android:textColor="#999" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:background="#eee" />
+
+            <LinearLayout
+                android:onClick="onClick"
+                android:id="@+id/layout_name"
+                style="@style/layout_me">
+
+                <TextView
+                    style="@style/tv_me"
+                    android:text="设置备注" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:background="#eee" />
+
+            <LinearLayout
+                android:onClick="onClick"
+                android:id="@+id/layout_nick"
+                style="@style/layout_me">
+
+                <TextView
+                    style="@style/tv_me"
+                    android:text="昵称" />
+
+                <TextView
+                    android:id="@+id/tv_contact_nick"
+                    android:text="felear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                style="@style/split" />
+
+            <LinearLayout
+                android:onClick="onClick"
+                android:id="@+id/layout_tel"
+                style="@style/layout_me">
+
+                <TextView
+                    style="@style/tv_me"
+                    android:text="手机号码" />
+
+                <TextView
+                    android:id="@+id/tv_me_tel"
+                    android:text="13267166985"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                style="@style/split" />
+
+            <LinearLayout
+                android:onClick="onClick"
+                android:id="@+id/layout_sign"
+                style="@style/layout_me">
+
+                <TextView
+                    style="@style/tv_me"
+                    android:text="个性签名" />
+
+                <TextView
+                    android:id="@+id/tv_me_signature"
+                    android:text="一路艰辛，感谢有你!"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <RelativeLayout
+
+                android:background="#eee"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:layout_width="match_parent">
+
+                <Button
+                    android:id="@+id/btn_send"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/sel_code_bg"
+                    android:onClick="onClick"
+                    android:text="发消息"
+                    android:textColor="#fff"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

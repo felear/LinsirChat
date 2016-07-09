@@ -6,7 +6,7 @@
 
 
     <com.foxconn.linsirchat.common.widget.CircleImageView
-        android:id="@+id/iv_item_icon"
+        android:id="@+id/iv_contact_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="centerCrop"
@@ -17,11 +17,11 @@
 
 
     <TextView
-        android:id="@+id/tv_item_name"
+        android:id="@+id/tv_contact_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/iv_item_icon"
+        android:layout_toRightOf="@id/iv_contact_icon"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="张三"

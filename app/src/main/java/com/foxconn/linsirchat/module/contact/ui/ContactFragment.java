@@ -18,7 +18,6 @@ import com.foxconn.linsirchat.base.BaseFragment;
 import com.foxconn.linsirchat.common.adapter.CommonReclycleViewAdapter;
 import com.foxconn.linsirchat.common.constant.Constant;
 import com.foxconn.linsirchat.module.contact.bean.ConversationBean;
-import com.foxconn.linsirchat.module.conversation.ui.ChatRoomActivity;
 import com.lidroid.xutils.db.sqlite.Selector;
 import com.lidroid.xutils.exception.DbException;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
@@ -57,20 +56,23 @@ public class ContactFragment extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         ConversationBean iUser = mList.get(position);
-                        Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
+                        Intent intent = new Intent(getActivity(), ShowContactActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putString("nick", iUser.getNick());
-                        bundle.putString("tel", iUser.getTel());
+                        bundle.putSerializable("user",iUser);
                         intent.putExtras(bundle);
                         getActivity().startActivity(intent);
                     }
                 });
-                ((TextView) helper.mItemView.findViewById(R.id.tv_item_name)).setText(item.getNick());
+                if (item.getName() == null) {
+                    ((TextView) helper.mItemView.findViewById(R.id.tv_contact_name)).setText(item.getNick());
+                } else {
+                    ((TextView) helper.mItemView.findViewById(R.id.tv_contact_name)).setText(item.getName());
+                }
 
                 // 设置头像
                 String icon = item.getIcon();
                 String gender = item.getGender();
-                ImageView ivIcon = (ImageView) helper.mItemView.findViewById(R.id.iv_item_icon);
+                ImageView ivIcon = (ImageView) helper.mItemView.findViewById(R.id.iv_contact_icon);
                 if (icon == null) {
                     if (TextUtils.equals(gender, "男")) {
                         ivIcon.setImageResource(R.mipmap.icon_man);
@@ -121,7 +123,9 @@ public class ContactFragment extends BaseFragment {
                 refreshData();
             }
         };
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(Constant.BROAD_URI_CONTACT));
+        IntentFilter intentFilter = new IntentFilter(Constant.BROAD_URI_CONTACT);
+        intentFilter.addAction(Constant.BROAD_URI_MODIFY);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLocalBroadcastReceiver,intentFilter);
 
     }
 

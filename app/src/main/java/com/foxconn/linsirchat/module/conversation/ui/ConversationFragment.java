@@ -122,13 +122,18 @@ public class ConversationFragment extends BaseFragment {
                 });
                 // 设置TextView控件内容
                 ((TextView) helper.mItemView.findViewById(R.id.tv_item_body)).setText(item.getBody());
-                ((TextView) helper.mItemView.findViewById(R.id.tv_item_name)).setText(item.getNick());
+                if (item.getName() == null) {
+                    ((TextView) helper.mItemView.findViewById(R.id.tv_contact_name)).setText(item.getNick());
+                } else {
+                    ((TextView) helper.mItemView.findViewById(R.id.tv_contact_name)).setText(item.getName());
+
+                }
                 ((TextView) helper.mItemView.findViewById(R.id.tv_item_time)).setText(formatTime(item.getTime()));
 
                 // 设置头像
                 String icon = item.getIcon();
                 String gender = item.getGender();
-                ImageView ivIcon = (ImageView) helper.mItemView.findViewById(R.id.iv_item_icon);
+                ImageView ivIcon = (ImageView) helper.mItemView.findViewById(R.id.iv_contact_icon);
                 if (icon == null) {
                     if (TextUtils.equals(gender, "男")) {
                         ivIcon.setImageResource(R.mipmap.icon_man);
@@ -241,7 +246,10 @@ public class ConversationFragment extends BaseFragment {
                 refreshData();
             }
         };
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(Constant.BROAD_URI_MSG));
+        IntentFilter intentFilter = new IntentFilter(Constant.BROAD_URI_MSG);
+        intentFilter.addAction(Constant.BROAD_URI_MODIFY);
+        intentFilter.addAction(Constant.BROAD_URI_CONTACT);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLocalBroadcastReceiver,intentFilter);
 
     }
 

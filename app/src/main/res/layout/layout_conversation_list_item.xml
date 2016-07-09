@@ -7,7 +7,7 @@
 
 
     <com.foxconn.linsirchat.common.widget.CircleImageView
-        android:id="@+id/iv_item_icon"
+        android:id="@+id/iv_contact_icon"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="centerCrop"
@@ -40,13 +40,13 @@
         android:layout_height="18dp" />
 
     <TextView
-        android:id="@+id/tv_item_name"
+        android:id="@+id/tv_contact_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
         android:layout_marginTop="12dp"
         android:layout_toLeftOf="@id/tv_item_time"
-        android:layout_toRightOf="@id/iv_item_icon"
+        android:layout_toRightOf="@id/iv_contact_icon"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="张三"
@@ -58,8 +58,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:layout_toRightOf="@id/iv_item_icon"
-        android:layout_below="@id/tv_item_name"
+        android:layout_toRightOf="@id/iv_contact_icon"
+        android:layout_below="@id/tv_contact_name"
         android:text="message"
         android:textSize="13dp"
         android:layout_toLeftOf="@id/tv_newMsg_num"

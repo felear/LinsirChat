@@ -5,7 +5,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -23,8 +22,7 @@ import com.foxconn.linsirchat.common.utils.WindowUtils;
 import com.foxconn.linsirchat.module.contact.bean.UserBean;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
-
-import java.util.HashMap;
+import com.se7en.utils.NetworkUtils;
 
 public class RegisterActivity extends BaseActivity {
 
@@ -224,6 +222,13 @@ public class RegisterActivity extends BaseActivity {
                     mgender = "女士";
                 } else {
                     userBean.setGender("男");
+                }
+
+                // 判断网络是否已连接，如未连接，停止处理
+                if (!NetworkUtils.isOnline()) {
+                    mtvTip.setVisibility(View.VISIBLE);
+                    mtvTip.setText("网络无法连接！");
+                    return;
                 }
 
                 // 弹出对话框

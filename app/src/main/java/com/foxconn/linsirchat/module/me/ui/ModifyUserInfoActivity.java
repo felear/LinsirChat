@@ -31,9 +31,9 @@ public class ModifyUserInfoActivity extends BaseActivity {
     private TextView mtvSave;
 
 
-    private String mstrTel;
     private int mType;
     private PopupWindow mPopupWindow;
+    private String mstrTel;
 
     @Override
     protected int setViewId() {
@@ -47,7 +47,6 @@ public class ModifyUserInfoActivity extends BaseActivity {
 
     @Override
     protected void init() {
-        mstrTel = SystemUtil.getSharedString(Constant.USER_TEL);
         mcanBack = true;
 
     }
@@ -83,7 +82,10 @@ public class ModifyUserInfoActivity extends BaseActivity {
         mtvTitle.setText(intent.getStringExtra(Constant.ME_ITEM_TITLE));
         mtvTips.setText(intent.getStringExtra(Constant.ME_ITEM_TIPS));
         mType = intent.getIntExtra(Constant.ME_ITEM_TYPE, -1);
-
+        mstrTel = intent.getStringExtra(Constant.USER_TEL);
+        if (mstrTel == null) {
+            mstrTel = SystemUtil.getSharedString(Constant.USER_TEL);
+        }
     }
 
     @Override

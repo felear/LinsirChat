@@ -14,7 +14,6 @@ import com.foxconn.linsirchat.base.BaseActivity;
 import com.foxconn.linsirchat.module.contact.ui.ContactFragment;
 import com.foxconn.linsirchat.module.conversation.ui.ConversationFragment;
 import com.foxconn.linsirchat.module.me.ui.MeFragment;
-import com.se7en.utils.NetworkUtils;
 
 public class MainActivity extends BaseActivity {
 

@@ -5,11 +5,13 @@ import com.lidroid.xutils.db.annotation.Id;
 import com.lidroid.xutils.db.annotation.Table;
 import com.lidroid.xutils.db.annotation.Unique;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2016/7/7.
  */
 @Table(name = "tbl_user_info")
-public class ConversationBean {
+public class ConversationBean implements Serializable {
 
     @Id
     private int id;
