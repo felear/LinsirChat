@@ -173,7 +173,7 @@ public class ConversationFragment extends BaseFragment {
     }
 
     // 刷新消息列表
-    private void refreshList() {
+    private void refreshData() {
         try {
             mList = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class).where("time", ">", 0).orderBy("time", true));
         } catch (DbException e) {
@@ -224,7 +224,7 @@ public class ConversationFragment extends BaseFragment {
         msrfLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshList();
+                refreshData();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -238,17 +238,17 @@ public class ConversationFragment extends BaseFragment {
         mLocalBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                refreshList();
+                refreshData();
             }
         };
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(Constant.BROAD_URI));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(Constant.BROAD_URI_MSG));
 
     }
 
     @Override
     protected void loadData() {
         // 初始打开时加载列表
-        refreshList();
+        refreshData();
     }
 
     @Override
@@ -263,6 +263,6 @@ public class ConversationFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        refreshList();
+        refreshData();
     }
 }

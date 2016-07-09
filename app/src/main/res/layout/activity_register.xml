@@ -54,6 +54,14 @@
                 android:hint="请输入手机号码"
                 android:inputType="number" />
 
+            <TextView
+                android:id="@+id/tv_tel_tip"
+                android:textColor="#e20"
+                android:text="用户名已存在！"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
             <LinearLayout
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -177,7 +185,7 @@
             <TextView
                 android:id="@+id/tv_reg_tip"
                 android:textColor="#e20"
-                android:text="用户名不存在！"
+                android:text="用户名已存在！"
                 android:visibility="gone"
                 android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"

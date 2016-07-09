@@ -92,7 +92,10 @@ public class MyService extends Service {
         WDUtils.getAllUser(new NetCallback() {
             @Override
             public void success(String strResult) {
-
+                // 发送广播通知其他节目更新联系人列表
+                Intent intent = new Intent(Constant.BROAD_URI_CONTACT);
+                intent.putExtra("nick", strResult);
+                broadcastManager.sendBroadcast(intent);
             }
 
             @Override
@@ -116,8 +119,8 @@ public class MyService extends Service {
                     }
                     ConversationBean iUser = list.get(0);
 
-                    // 发送广播
-                    Intent intent = new Intent(Constant.BROAD_URI);
+                    // 发送广播通知其他节目更新消息列表
+                    Intent intent = new Intent(Constant.BROAD_URI_MSG);
                     intent.putExtra("tel", strResult);
                     broadcastManager.sendBroadcast(intent);
 

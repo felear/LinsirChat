@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:gravity="center"
-        android:layout_margin="40dp"
+        android:layout_margin="15dp"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -22,7 +22,7 @@
 
         <TextView
             android:text="正在加载"
-            android:textSize="22sp"
+            android:textColor="#222"
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

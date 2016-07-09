@@ -127,41 +127,43 @@ public class LoginActivity extends BaseActivity {
                 if (!WDUtils.containTel(mstrTel)) {
                     mtvTip.setVisibility(View.VISIBLE);
                     mtvTip.setText("用户名不存在！");
-//                    return;
+                    return;
                 }
 
                 mPopupWindow = WindowUtils.showLoadPopopWindow(this, getWindow().getDecorView());
 
+                // 验证用户名和密码
                 WDUtils.login(mstrTel, mstrPwd, new NetCallback() {
                     @Override
                     public void success(String strResult) {
-                        if ("success".equals(strResult)) {
+                        // 延时1秒登陆
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
 
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    SystemUtil.setSharedString(Constant.USER_TEL, mstrTel);
-                                    SystemUtil.setSharedString(Constant.USER_PWD, mstrPwd);
-
-                                    if (mPopupWindow != null && mPopupWindow.isShowing()) {
-                                        mPopupWindow.dismiss();
-                                    }
-
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                                if (mPopupWindow != null && mPopupWindow.isShowing()) {
+                                    mPopupWindow.dismiss();
                                 }
-                            }, 1000);
-                        } else {
-                            mtvTip.setVisibility(View.VISIBLE);
-                            mtvTip.setText("密码错误！");
-                        }
+
+                                SystemUtil.setSharedString(Constant.USER_TEL, mstrTel);
+                                SystemUtil.setSharedString(Constant.USER_PWD, mstrPwd);
+
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }, 1000);
+
                     }
 
                     @Override
                     public void fail(String strResult) {
-
+                        // 密码错误提示
+                        if (mPopupWindow != null && mPopupWindow.isShowing()) {
+                            mPopupWindow.dismiss();
+                        }
+                        mtvTip.setVisibility(View.VISIBLE);
+                        mtvTip.setText("密码错误！");
                     }
                 });
 

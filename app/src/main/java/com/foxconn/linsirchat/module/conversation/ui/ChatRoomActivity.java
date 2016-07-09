@@ -184,7 +184,7 @@ public class ChatRoomActivity extends BaseActivity {
                 }
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(Constant.BROAD_URI));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(Constant.BROAD_URI_MSG));
 
 
     }

@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.foxconn.linsirchat.MyApplication;
 import com.foxconn.linsirchat.R;
@@ -19,6 +18,7 @@ import com.foxconn.linsirchat.base.BaseFragment;
 import com.foxconn.linsirchat.base.NetCallback;
 import com.foxconn.linsirchat.common.constant.Constant;
 import com.foxconn.linsirchat.common.utils.WDUtils;
+import com.foxconn.linsirchat.common.widget.CircleImageView;
 import com.foxconn.linsirchat.module.contact.bean.ConversationBean;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.db.sqlite.Selector;
@@ -45,6 +45,10 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     private TextView mtvAge;
     @ViewInject(R.id.tv_me_local)
     private TextView mtvLocal;
+
+    @ViewInject(R.id.civ_me_icon)
+    private CircleImageView mcivIcon;
+
     @ViewInject(R.id.layout_sign)
     private LinearLayout mLayoutSign;
     @ViewInject(R.id.layout_age)
@@ -103,12 +107,16 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     protected void loadData() {
 
+        String gender = mConversation.getGender();
+
+        setIcon(gender);
         mtvNick.setText(mConversation.getNick());
-        mtvGender.setText(mConversation.getGender());
+        mtvGender.setText(gender);
         mtvTel.setText(mstrTel);
         mtvSignature.setText(mConversation.getSignature());
         mtvAge.setText(mConversation.getAge());
         mtvLocal.setText(mConversation.getLocal());
+
 
         // 接受消息列表变化监听
         mLocalBroadcastReceiver = new BroadcastReceiver() {
@@ -134,6 +142,14 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(Constant.BROAD_URI_MODIFY));
 
+    }
+
+    private void setIcon(String gender) {
+        if (TextUtils.equals(gender, "男")) {
+            mcivIcon.setImageResource(R.mipmap.icon_man);
+        } else {
+            mcivIcon.setImageResource(R.mipmap.icon_woman2);
+        }
     }
 
     @Override
@@ -168,13 +184,13 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
             case R.id.layout_nick:
                 // 跳转也，开始更改昵称
                 intent.putExtra(Constant.ME_ITEM_TITLE, "更改昵称");
-                intent.putExtra(Constant.ME_ITEM_MSG, mtvLocal.getText());
+                intent.putExtra(Constant.ME_ITEM_MSG, mtvNick.getText());
                 intent.putExtra(Constant.ME_ITEM_TYPE, Constant.ME_TYPE_Nick);
                 c = ModifyUserInfoActivity.class;
                 break;
             case R.id.layout_gender:
                 // 更改性别
-                changeAge();
+                changeGender();
 
                 break;
             case R.id.layout_tel:
@@ -199,7 +215,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private void changeAge() {
+    private void changeGender() {
         final String[] sex = {"男", "女"};
         mNum = 0;
         if (TextUtils.equals(mConversation.getGender(), "女")) {
@@ -223,6 +239,8 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                                 @Override
                                 public void success(String strResult) {
                                     mtvGender.setText(sex[mNum]);
+                                    mConversation.setGender(sex[mNum]);
+                                    setIcon(sex[mNum]);
                                 }
 
                                 @Override

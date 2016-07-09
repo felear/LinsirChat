@@ -1,11 +1,13 @@
 package com.foxconn.linsirchat.module.me.ui;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.foxconn.linsirchat.R;
@@ -13,6 +15,7 @@ import com.foxconn.linsirchat.base.BaseActivity;
 import com.foxconn.linsirchat.base.NetCallback;
 import com.foxconn.linsirchat.common.constant.Constant;
 import com.foxconn.linsirchat.common.utils.WDUtils;
+import com.foxconn.linsirchat.common.utils.WindowUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.se7en.utils.SystemUtil;
@@ -30,6 +33,7 @@ public class ModifyUserInfoActivity extends BaseActivity {
 
     private String mstrTel;
     private int mType;
+    private PopupWindow mPopupWindow;
 
     @Override
     protected int setViewId() {
@@ -92,19 +96,40 @@ public class ModifyUserInfoActivity extends BaseActivity {
             case R.id.tv_me_save:
                 // TODO 保存数据
 
+                mPopupWindow = WindowUtils.showLoadPopopWindow(this, mtvTitle);
+
                 WDUtils.changeElement(mstrTel, mType, medit.getText().toString(), new NetCallback() {
                     @Override
                     public void success(String strResult) {
-                        showLongToast("更改成功");
-                        Intent intent = new Intent(Constant.BROAD_URI_MODIFY);
-                        intent.putExtra(Constant.ME_ITEM_TYPE, mType);
-                        intent.putExtra(Constant.ME_ITEM_MSG, medit.getText().toString());
-                        LocalBroadcastManager.getInstance(ModifyUserInfoActivity.this).sendBroadcast(intent);
-                        finish();
+
+                        // 延时1s返回
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                showLongToast("更改成功");
+
+                                // 发送广播通知其他界面更改UI
+                                Intent intent = new Intent(Constant.BROAD_URI_MODIFY);
+                                intent.putExtra(Constant.ME_ITEM_TYPE, mType);
+                                intent.putExtra(Constant.ME_ITEM_MSG, medit.getText().toString());
+                                LocalBroadcastManager.getInstance(ModifyUserInfoActivity.this).sendBroadcast(intent);
+
+                                // 收起弹出框
+                                if (mPopupWindow != null && mPopupWindow.isShowing()) {
+                                    mPopupWindow.dismiss();
+                                }
+                                finish();
+                            }
+                        }, 1000);
                     }
 
                     @Override
                     public void fail(String strResult) {
+                        // 修改失败提示
+                        if (mPopupWindow != null && mPopupWindow.isShowing()) {
+                            mPopupWindow.dismiss();
+                        }
                         showLongToast("更改失败");
                     }
                 });

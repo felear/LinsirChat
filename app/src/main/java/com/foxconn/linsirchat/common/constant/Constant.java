@@ -11,9 +11,10 @@ public class Constant {
     public static final String USER_PWD = "pwd";
     public static final String USER_SIGN = "signature";
 
-    public static final String BROAD_URI = "com.lin.local";
+    public static final String BROAD_URI_MSG = "com.lin.local";
     public static final String BROAD_URI_CHAT = "com.lin.chat";
     public static final String BROAD_URI_MODIFY = "com.lin.modify";
+    public static final String BROAD_URI_CONTACT = "com.lin.contact";
     public static final String CHAT_IN_BACK = "0x4546127fff24246dfasdf5cfe";
 
     public static final String MSG_IS_READ = "isRead";
@@ -29,5 +30,6 @@ public class Constant {
     public static final int ME_TYPE_Nick = 2;
     public static final int ME_TYPE_GENDER = 3;
     public static final int ME_TYPE_LOCAL = 4;
+    public static final int ME_TYPE_PWD = 5;
 
 }

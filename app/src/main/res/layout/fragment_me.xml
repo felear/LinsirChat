@@ -23,6 +23,8 @@
                 android:id="@+id/civ_me_icon"
                 android:src="@mipmap/icon_man"
                 android:scaleType="centerCrop"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_width="70dp"
                 android:layout_height="70dp" />
         </LinearLayout>

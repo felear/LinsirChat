@@ -1,8 +1,12 @@
 package com.foxconn.linsirchat.module.contact.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,8 +16,10 @@ import com.foxconn.linsirchat.MyApplication;
 import com.foxconn.linsirchat.R;
 import com.foxconn.linsirchat.base.BaseFragment;
 import com.foxconn.linsirchat.common.adapter.CommonReclycleViewAdapter;
+import com.foxconn.linsirchat.common.constant.Constant;
 import com.foxconn.linsirchat.module.contact.bean.ConversationBean;
 import com.foxconn.linsirchat.module.conversation.ui.ChatRoomActivity;
+import com.lidroid.xutils.db.sqlite.Selector;
 import com.lidroid.xutils.exception.DbException;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
@@ -28,6 +34,7 @@ public class ContactFragment extends BaseFragment {
     private PullLoadMoreRecyclerView mprcv;
     private List<ConversationBean> mList = new ArrayList<ConversationBean>();
     private CommonReclycleViewAdapter<ConversationBean> mAdapter;
+    private BroadcastReceiver mLocalBroadcastReceiver;
 
     @Override
     protected int setViewId() {
@@ -75,18 +82,21 @@ public class ContactFragment extends BaseFragment {
             }
         };
 
+        // 设置为垂直线性布局
         mprcv.setLinearLayout();
         mprcv.setAdapter(mAdapter);
+        // 关闭上啦加载更多
         mprcv.setPushRefreshEnable(false);
 
     }
 
     @Override
     protected void initEvent() {
+        // 设置下拉刷新监听
         mprcv.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
             @Override
             public void onRefresh() {
-
+                // 下拉刷新列表
                 refreshData();
 
                 new Handler().postDelayed(new Runnable() {
@@ -103,21 +113,43 @@ public class ContactFragment extends BaseFragment {
             }
         });
 
+        // 接受消息列表变化监听
+        mLocalBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // 重新加载列表
+                refreshData();
+            }
+        };
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(Constant.BROAD_URI_CONTACT));
+
+    }
+
+    @Override
+    public void onDestroy() {
+        // 取消广播注册
+        if (mLocalBroadcastReceiver != null)
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mLocalBroadcastReceiver);
+        super.onDestroy();
     }
 
     // 刷新数据
     private void refreshData() {
         try {
-            mList = MyApplication.mDbUtils.findAll(ConversationBean.class);
+            // 获得数据库中的所有联系人，按昵称排序
+            mList = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class)
+            .orderBy("nick"));
         } catch (DbException e) {
             e.printStackTrace();
         }
+        // 当获取的结果不为空时，更新适配器
         if (mList != null)
             mAdapter.refresh(mList);
     }
 
     @Override
     protected void loadData() {
+        // 初次加载是更新数据
         refreshData();
     }
 }

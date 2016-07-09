@@ -210,7 +210,7 @@ public class WDUtils {
 
 
                 if (netCallback != null) {
-                    netCallback.success(value.getTel() + "");
+                    netCallback.success(value.getNick() + "");
                 }
 
 
@@ -232,11 +232,12 @@ public class WDUtils {
 
                 } catch (DbException e) {
                     e.printStackTrace();
-                    Log.d("print","getUser : " + e);
+                    Log.d("print", "getUser : " + e);
                 }
 
-
-
+                if (netCallback != null) {
+                    netCallback.success(value.getNick() + "");
+                }
             }
 
             @Override
@@ -310,7 +311,8 @@ public class WDUtils {
         });
     }
 
-    public static void changeElement(String tel,int type, String s,NetCallback callback) {
+    // 更改元素方法
+    public static void changeElement(String tel, int type, String strDest, NetCallback callback) {
         ConversationBean conversationBean = null;
         try {
             List<ConversationBean> list = MyApplication.mDbUtils.findAll(Selector.from(ConversationBean.class)
@@ -323,26 +325,33 @@ public class WDUtils {
 
         switch (type) {
             case Constant.ME_TYPE_SIGN:
-                conversationBean.setSignature(s);
+                conversationBean.setSignature(strDest);
                 break;
             case Constant.ME_TYPE_AGE:
-                conversationBean.setAge(s);
+                conversationBean.setAge(strDest);
                 break;
             case Constant.ME_TYPE_Nick:
-                conversationBean.setNick(s);
+                conversationBean.setNick(strDest);
                 break;
             case Constant.ME_TYPE_GENDER:
-                conversationBean.setGender(s);
+                conversationBean.setGender(strDest);
                 break;
             case Constant.ME_TYPE_LOCAL:
-                conversationBean.setLocal(s);
+                conversationBean.setLocal(strDest);
                 break;
+
         }
+
         UserBean userBean = new UserBean();
         userBean.setByConversationBean(conversationBean);
-        userBean.setPwd(SystemUtil.getSharedString(Constant.USER_PWD));
+        // 判断是否为修改密码
+        if (type == Constant.ME_TYPE_PWD) {
+            userBean.setPwd(strDest);
+        } else {
+            userBean.setPwd(SystemUtil.getSharedString(Constant.USER_PWD));
+        }
 
-        register(userBean,callback);
+        register(userBean, callback);
 
     }
 }
