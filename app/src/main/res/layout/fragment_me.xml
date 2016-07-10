@@ -149,6 +149,19 @@
             android:layout_width="match_parent"/>
 
         <LinearLayout
+            android:id="@+id/layout_pwd"
+            style="@style/layout_me">
+
+            <TextView
+                style="@style/tv_me"
+                android:text="修改密码" />
+
+        </LinearLayout>
+
+        <View
+            style="@style/split" />
+
+        <LinearLayout
             android:id="@+id/layout_sign_out"
             style="@style/layout_me">
 

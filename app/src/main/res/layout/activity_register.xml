@@ -48,11 +48,17 @@
             android:padding="16dp">
 
 
-            <EditText
-                android:id="@+id/edit_tel"
-                style="@style/Edit_Reg"
-                android:hint="请输入手机号码"
-                android:inputType="number" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sel_edit_bg">
+
+                <EditText
+                    android:id="@+id/edit_tel"
+                    style="@style/Edit_style"
+                    android:hint="手机号码"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:id="@+id/tv_tel_tip"
@@ -64,18 +70,23 @@
 
             <LinearLayout
                 android:gravity="center"
+                android:layout_marginTop="12dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/edit_code"
-                    style="@style/Edit_Reg"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_centerInParent="true"
-                    android:hint="请输入验证码"
-                    android:inputType="number" />
+                    android:background="@drawable/sel_edit_bg">
+
+                    <EditText
+                        android:id="@+id/edit_code"
+                        style="@style/Edit_style"
+                        android:hint="验证码"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
 
                 <TextView
                     android:id="@+id/btn_code"
@@ -84,16 +95,39 @@
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/edit_pwd"
-                style="@style/Edit_Reg"
-                android:hint="请输入密码"
-                android:inputType="textPassword" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/sel_edit_bg">
 
-            <EditText
-                android:id="@+id/edit_nick"
-                style="@style/Edit_Reg"
-                android:hint="请输入姓名" />
+                <EditText
+                    android:id="@+id/edit_pwd"
+                    style="@style/Edit_style"
+                    android:hint="密码"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_pwd_tip"
+                android:textColor="#e20"
+                android:text="密码不能少于6位！"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/sel_edit_bg">
+
+                <EditText
+                    android:id="@+id/edit_nick"
+                    style="@style/Edit_style"
+                    android:hint="昵称"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -174,7 +208,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/sel_code_bg"
                 android:onClick="onClick"
                 android:text="注册"

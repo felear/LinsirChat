@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,6 +25,10 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.se7en.utils.NetworkUtils;
 
+import cn.smssdk.DefaultOnSendMessageHandler;
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
+
 public class RegisterActivity extends BaseActivity {
 
     @ViewInject(R.id.checkBox)
@@ -36,11 +41,16 @@ public class RegisterActivity extends BaseActivity {
     private TextView mtvTip;
     @ViewInject(R.id.tv_tel_tip)
     private TextView mtvTelTip;
+    @ViewInject(R.id.tv_pwd_tip)
+    private TextView mtvPwdTip;
+
     @ViewInject(R.id.btn_send)
     private Button mbtnSend;
 
     @ViewInject(R.id.edit_tel)
     private EditText meditTel;
+    @ViewInject(R.id.edit_code)
+    private EditText meditCode;
     @ViewInject(R.id.edit_pwd)
     private EditText meditPwd;
     @ViewInject(R.id.edit_nick)
@@ -55,6 +65,8 @@ public class RegisterActivity extends BaseActivity {
     private String mstrPwd;
     private String mstrNick;
     private String mgender = "先生";
+    private String mstrCode;
+    private String mstrPhone;
 
     @Override
     protected int setViewId() {
@@ -113,10 +125,11 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0)
+                if (s.length() > 0) {
                     mstrTel = s.toString();
-                else
+                } else {
                     mstrTel = null;
+                }
 
                 if (s.length() == 11 && WDUtils.containTel(s.toString())) {
                     mtvTelTip.setVisibility(View.VISIBLE);
@@ -132,6 +145,26 @@ public class RegisterActivity extends BaseActivity {
             }
         });
 
+        meditCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    mstrCode = s.toString();
+                } else {
+                    mstrCode = null;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setBtnEnable();
+            }
+        });
+
         meditPwd.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -139,10 +172,13 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0)
+                if (s.length() > 5) {
+                    mtvPwdTip.setVisibility(View.GONE);
                     mstrPwd = s.toString();
-                else
+                } else {
+                    mtvPwdTip.setVisibility(View.VISIBLE);
                     mstrPwd = null;
+                }
             }
 
             @Override
@@ -157,7 +193,7 @@ public class RegisterActivity extends BaseActivity {
     private void setBtnEnable() {
         // 当必选项不为空时，按键设置为可点击
         if (mstrTel != null && mstrPwd != null &&
-                mcheckBox.isChecked() && mstrNick != null) {
+                mcheckBox.isChecked() && mstrNick != null && mstrCode != null) {
             mbtnSend.setEnabled(true);
         } else {
             mbtnSend.setEnabled(false);
@@ -176,6 +212,18 @@ public class RegisterActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_code:
+                SMSSDK.registerEventHandler(new EventHandler() {
+                    public void afterEvent(int event, int result, Object data) {
+                        // 解析注册结果
+                        if (result == SMSSDK.RESULT_COMPLETE) {
+//                            @SuppressWarnings("unchecked")
+                            Log.d("print", data + "");
+                        }
+                        // 提交用户
+                    }
+                });
+                SMSSDK.getVerificationCode("+86", mstrTel, new DefaultOnSendMessageHandler());
+
                 // 获取验证码事件处理
                 btn_code.setClickable(false);
                 new CountDownTimer(miCnt * 1000, 1000) {
@@ -199,7 +247,14 @@ public class RegisterActivity extends BaseActivity {
                 startActivity(intent);
                 break;
             case R.id.btn_send:
-            // 提交注册事件处理
+                // 提交注册事件处理
+                if (mstrPhone != null && mstrPhone.equals(mstrTel))
+                    showLongToast("验证成功！");
+                else {
+                    showLongToast("验证失败！");
+                    return;
+                }
+
                 // 当手机号码已存在，提示用户，并停止处理事件
                 if (WDUtils.containTel(mstrTel)) {
                     mtvTip.setVisibility(View.VISIBLE);
@@ -249,7 +304,7 @@ public class RegisterActivity extends BaseActivity {
                                 showLongToast(mstrNick + mgender + "，注册成功");
                                 finish();
                             }
-                        },1000);
+                        }, 1000);
                     }
 
                     @Override

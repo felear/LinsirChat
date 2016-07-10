@@ -63,6 +63,10 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     private LinearLayout mLayoutTel;
     @ViewInject(R.id.layout_local)
     private LinearLayout mLayoutLocal;
+    @ViewInject(R.id.layout_pwd)
+    private LinearLayout mLayoutPwd;
+    @ViewInject(R.id.layout_sign_out)
+    private LinearLayout mLayoutSingOut;
 
     private String mstrTel;
     private ConversationBean mConversation = new ConversationBean();
@@ -103,6 +107,8 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         mLayoutIcon.setOnClickListener(this);
         mLayoutLocal.setOnClickListener(this);
         mcivIcon.setOnClickListener(this);
+        mLayoutPwd.setOnClickListener(this);
+        mLayoutSingOut.setOnClickListener(this);
     }
 
     @Override
@@ -212,6 +218,14 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                 // 查看头像
                 intent.putExtra("gender", mConversation.getGender());
                 c = ShowIconActivity.class;
+                break;
+            case R.id.layout_pwd:
+                // 修改密码
+
+                break;
+            case R.id.layout_sign_out:
+                // 退出登录
+
                 break;
         }
         if (c != null) {
