@@ -38,7 +38,7 @@ public class MyApplication extends Application {
         NetworkUtils.setContext(this);
         mDbUtils = DbUtils.create(this);
         Wilddog.setAndroidContext(this);
-        SMSSDK.initSDK(this, "14bd4c20817fc", "e1cdc4ffd48675e1fa3567291ce5f02b");
+        SMSSDK.initSDK(this, "14c864772d70e", "fdb4b7a1dd9a2a1e8652b1fbb3e349ad");
         bindService(new Intent(this, MyService.class), connection, BIND_AUTO_CREATE);
     }
 

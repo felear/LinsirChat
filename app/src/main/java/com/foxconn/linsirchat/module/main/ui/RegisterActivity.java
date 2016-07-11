@@ -212,6 +212,7 @@ public class RegisterActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_code:
+                // 获取短信验证码
                 SMSSDK.registerEventHandler(new EventHandler() {
                     public void afterEvent(int event, int result, Object data) {
                         // 解析注册结果
@@ -222,7 +223,7 @@ public class RegisterActivity extends BaseActivity {
                         // 提交用户
                     }
                 });
-                SMSSDK.getVerificationCode("+86", mstrTel, new DefaultOnSendMessageHandler());
+                SMSSDK.getVerificationCode("86", mstrTel, new DefaultOnSendMessageHandler());
 
                 // 获取验证码事件处理
                 btn_code.setClickable(false);

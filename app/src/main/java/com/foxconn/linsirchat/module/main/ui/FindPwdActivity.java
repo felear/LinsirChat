@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,10 @@ import com.foxconn.linsirchat.base.BaseActivity;
 import com.foxconn.linsirchat.common.utils.WDUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+
+import cn.smssdk.DefaultOnSendMessageHandler;
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 
 public class FindPwdActivity extends BaseActivity {
 
@@ -92,7 +97,7 @@ public class FindPwdActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
+                if (s.length() > 3) {
                     mstrCode = s.toString();
                 } else {
                     mstrCode = null;
@@ -156,6 +161,20 @@ public class FindPwdActivity extends BaseActivity {
                 c = LoginActivity.class;
                 break;
             case R.id.btn_code:
+
+// 获取短信验证码
+                SMSSDK.registerEventHandler(new EventHandler() {
+                    public void afterEvent(int event, int result, Object data) {
+                        // 解析注册结果
+                        if (result == SMSSDK.RESULT_COMPLETE) {
+//                            @SuppressWarnings("unchecked")
+                        }
+                            Log.d("print", data + " ： " + result);
+                        // 提交用户
+                    }
+                });
+                SMSSDK.getVerificationCode("+86", mstrTel, new DefaultOnSendMessageHandler());
+
                 // 获取验证码事件处理
                 btn_code.setClickable(false);
                 miCnt = 120;
@@ -176,6 +195,7 @@ public class FindPwdActivity extends BaseActivity {
                 break;
             case R.id.btn_send:
                 // 提交
+                SMSSDK.submitVerificationCode("+86", mstrTel,mstrCode);
 
                 break;
         }
